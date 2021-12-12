@@ -1,1 +1,62 @@
-name: test
+server:
+  port: 9200
+spring:
+  application:
+    name: consul-client
+
+############### consul config
+---
+spring:
+  cloud:
+    consul:
+      host: 1.14.94.46    # 注册consul服务的主机
+      port: 8500          # 注册consul服务的端口
+      discovery:
+        register-health-check: true # consul服务的健康检查 （不推荐关闭 默认为true）
+        service-name: ${spring.application.name}
+        prefer-ip-address: true # 注册到服务的为ip
+        heartbeat:
+          enabled: true
+
+
+################## ribbon config #################
+---
+consul-client2: # 服务id
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule # 配置负载均衡策略
+
+
+
+######### feign timeout config #############
+---
+feign:
+  client:
+    config:
+      consul-client2:
+        connectTimeout: 5000   # 配置指定服务连接超时
+        readTimeout: 5000    # 配置指定服务等待超时
+#      default:
+#        connectTimeout: 5000    # 配置所有服务连接超时
+#        readTimeout: 5000     # 配置所有服务等待超时
+########### feign timeout config end ############
+########### feign log config start ############
+---
+feign:
+  client:
+    config:
+      consul-client2: #配置指定服务日志展示
+        loggerLevel: full
+#      default:
+#        loggerLevel: full # 配置全局服务日志展示
+---
+logging:
+  level:
+    com.zhangli.client: debug # 指定feign调用客户端对象所在包，必须是debug级别
+
+
+########### feign log config end ##############
+########### hystrix config start #############
+---
+feign:
+  hystrix:
+    enabled: true
