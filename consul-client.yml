@@ -1,21 +1,6 @@
 server:
   port: 9200
 
-############### consul config
----
-spring:
-  cloud:
-    consul:
-      host: 1.14.94.46    # 注册consul服务的主机
-      port: 8500          # 注册consul服务的端口
-      discovery:
-        register-health-check: true # consul服务的健康检查 （不推荐关闭 默认为true）
-        service-name: ${spring.application.name}
-        prefer-ip-address: true # 注册到服务的为ip
-        heartbeat:
-          enabled: true
-
-
 ################## ribbon config #################
 ---
 consul-client2: # 服务id
